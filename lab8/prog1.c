@@ -12,12 +12,15 @@
 
 int main()
 {
-    char * read_file(const char *file, char *music_data, int * SIZE);
+    char * read_music(const char *file, int * SIZE);
+    double time_music(char * music_data, int array_length);
     char * music_data;
     const char FILENAME[] = "song.music";
-    int i = 0, length = 0;
+    int i = 0, length = 0, catch;
+    double time;
 
-    music_data = read_file(FILENAME, music_data, &length);
+    // read in file using function read_music
+    music_data = read_music(FILENAME, &length);
     if (music_data == NULL) {
         printf("error 1\n");
     }
@@ -25,6 +28,17 @@ int main()
     for (i = 0; i < length; i++) {
         printf("\n%c", music_data[i]);
     }
+    
+    // calculate the length (in seconds) of the music
+    time = time_music(music_data, length);
+    if (time == 0) {
+        printf("error2\n");
+    }
+    
+    printf("\n%lf", time);
+
+    // now pass music data to decoding / writing function
+    // catch = write_music(music_data, &length);
 
     printf("\n");
 
@@ -35,18 +49,20 @@ int main()
 
 /***************************************
  * Author: Shane Ryan
- * Name: read_file
+ * Name: read_music
  * Purpose: read length of .music file,
  * allocate an array of proper length
  * to store it, then read it in.
- * Input: char const FILENAME
+ * Input: const char FILENAME, pointer
+ * to access array, pointer to size
  * Output: pointer to created array
  * ************************************/
 
-char * read_file(const char *file, char *music_data, int * SIZE)
+char * read_music(const char *file, int * SIZE)
 {
     int j = 0;
     FILE * music;
+    char * music_data;
     char current_char;
 
     // open file and return error if not found
@@ -102,4 +118,89 @@ char * read_file(const char *file, char *music_data, int * SIZE)
     // free at end of main function though
 
     return music_data;
+}
+
+
+/***************************************
+ * Author: Shane Ryan
+ * Name: time_music
+ * Purpose: read length of music in 
+ * seconds.,
+ * Input: char[]
+ * Output: int length
+ * ************************************/
+
+double time_music(char * music_data, int array_length)
+{
+    int i;
+    double time = 0, delta_time;
+    
+
+    for (i = 0; i < array_length; i++) {
+        switch (music_data[i])
+        {
+            case 'a':
+                time = time + delta_time;
+                break;
+            case 'A':
+                time = time + delta_time;
+                break;
+            case 'b':
+                time = time + delta_time;
+                break;
+            case 'B':
+                time = time + delta_time;
+                break;
+            case 'c':
+                time = time + delta_time;
+                break;
+            case 'C':
+                time = time + delta_time;
+                break;
+            case 'd':
+                time = time + delta_time;
+                break;
+            case 'D':
+                time = time + delta_time;
+                break;
+            case 'e':
+                time = time + delta_time;
+                break;
+            case 'E':
+                time = time + delta_time;
+                break;
+            case 'f':
+                time = time + delta_time;
+                break;
+            case 'F':
+                time = time + delta_time;
+                break;
+            case 'g':
+                time = time + delta_time;
+                break;
+            case 'G':
+                time = time + delta_time;
+                break;
+            case '.':
+                time = time + delta_time;
+                break;
+            case 1:
+                delta_time = 2;
+                break;
+            case 2:
+                delta_time = 1;
+                break;
+            case 4:
+                delta_time = .5;
+                break;
+            case 8:
+                delta_time = .25;
+                break;
+            case 6:
+                delta_time = .15;
+                break;
+        }
+    }
+
+        return time;
 }
