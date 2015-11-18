@@ -20,15 +20,16 @@ int main()
 
     // increment the SIZE variable for every character
     // added: other than whitespace
-    do {
+    while(1) {
         current_char = fgetc(music);
-        if (current_char == EOF) {
+        if (feof(music)) {
             break;
         }
-        if (current_char != '\n' && current_char != ' ') {
+        if (current_char != '\n' && current_char != ' ' &&
+                current_char != '\t') {
             SIZE++; 
         }
-    } while(current_char != EOF);
+    }
 
     printf("%d\n", SIZE); // remove after debugging
 
@@ -36,10 +37,22 @@ int main()
     // (in terms of memory)
     music_data = calloc(SIZE, sizeof(char));
 
-    // remove after debugging, filling array to print
-    for (j=0; j<SIZE; j++) {
-        music_data[j] = j;
-        printf("\n%d", music_data[j]);
+    // reset where we are in the file, and fill that array up!
+    // (note: probably could've combined this while loop with
+    // the above one by creating an array and realloc'ing it
+    // with every additional character scanned until eof :(
+    fseek(music, 0, SEEK_SET);
+    while(1) {
+        current_char = fgetc(music);
+        if (feof(music)) {
+            break;
+        }
+        if (current_char != '\n' && current_char != ' ' &&
+                current_char != '\t') {
+            music_data[j] = current_char; 
+            printf("\n%c", music_data[j]);
+            j++;
+        }
     }
 
     printf("\n");
