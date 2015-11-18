@@ -1,12 +1,8 @@
-/*
-This example program makes use of the simple
-sound library to generate a sine wave and write the
-output to sound.wav.
-For complete documentation on the library, see:
-http://www.nd.edu/~dthain/courses/cse20211/fall2013/wavfile
-Go ahead and modify this program for your own purposes.
-*/
-
+/***************************************************
+ * Author: Shane Ryan  sryan8@nd.edu
+ * Name: prog1.c
+ * Purpose: decode .music file and output .wav file
+ * ************************************************/
 
 #include <stdio.h>
 #include <math.h>
