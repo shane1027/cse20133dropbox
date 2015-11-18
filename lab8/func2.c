@@ -1,9 +1,9 @@
 /***************************************
  * Author: Shane Ryan
- * Name: prog1.c
- * Purpose: read in a .music file and
- * convert it to a .wav file like a 
- * player piano.
+ * Name: func1.c
+ * Purpose: read length of .music file,
+ * allocate an array of proper length
+ * to store it, then read it in.
  * ************************************/
 
 #include <stdio.h>
@@ -13,38 +13,10 @@
 
 int main()
 {
-    void read_file(char const FILENAME, char * music_data);
-    char * music_data;
-    int catch, i = 0;
-
-    catch = read_file(FILENAME, music_data);
-    if (catch != 0) {
-        printf("error 1\n")
-    }
-
-    for (i = 0; i < (sizeof(*music_data)/sizeof(char)); i++) {
-        printf("\n%c", music_data[i]);
-    }
-
-    return 0;
-}
-
-
-/***************************************
- * Author: Shane Ryan
- * Name: read_file
- * Purpose: read length of .music file,
- * allocate an array of proper length
- * to store it, then read it in.
- * Input: char const FILENAME
- * Output: pointer to created array
- * ************************************/
-
-void read_file(char const FILENAME, char * music_data)
-{
     int j = 0;
     int SIZE = 0;
     FILE * music;
+    char * music_data;
     char current_char;
 
     // open file and return error if not found
@@ -67,7 +39,7 @@ void read_file(char const FILENAME, char * music_data)
         }
     }
 
-    printf("%d\n", SIZE); // remove after debugging
+    // printf("%d\n", SIZE); // use for debugging
 
     // now we can allocate an array to store the music data efficiently
     // (in terms of memory)
@@ -86,18 +58,16 @@ void read_file(char const FILENAME, char * music_data)
         if (current_char != '\n' && current_char != ' ' &&
                 current_char != '\t') {
             music_data[j] = current_char; 
-            printf("\n%c", music_data[j]);
+            // printf("\n%c", music_data[j]); // use for debugging
             j++;
         }
     }
 
-    printf("\n");
+    // printf("\n");
     
     // always free memory and close files!!
     fclose(music);
-    // free(music_data);
-    // don't free it when we still need it elsewhere^^
-    // free at end of main function though
+    free(music_data);
 
     return 0;
 }

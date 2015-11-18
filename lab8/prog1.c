@@ -9,23 +9,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdio.h>
-#define FILENAME "song.music"
 
 int main()
 {
-    void read_file(char const FILENAME, char * music_data);
+    char * read_file(const char *file, char *music_data, int * SIZE);
     char * music_data;
-    int catch, i = 0;
+    const char FILENAME[] = "song.music";
+    int i = 0, length = 0;
 
-    catch = read_file(FILENAME, music_data);
-    if (catch != 0) {
-        printf("error 1\n")
+    music_data = read_file(FILENAME, music_data, &length);
+    if (music_data == NULL) {
+        printf("error 1\n");
     }
 
-    for (i = 0; i < (sizeof(*music_data)/sizeof(char)); i++) {
+    for (i = 0; i < length; i++) {
         printf("\n%c", music_data[i]);
     }
 
+    printf("\n");
+
+    free(music_data);
     return 0;
 }
 
@@ -40,18 +43,17 @@ int main()
  * Output: pointer to created array
  * ************************************/
 
-void read_file(char const FILENAME, char * music_data)
+char * read_file(const char *file, char *music_data, int * SIZE)
 {
     int j = 0;
-    int SIZE = 0;
     FILE * music;
     char current_char;
 
     // open file and return error if not found
-    music = fopen(FILENAME, "r");
+    music = fopen(file, "r");
     if (music == NULL) {
         printf("File not found.\n");
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     // increment the SIZE variable for every character
@@ -63,15 +65,15 @@ void read_file(char const FILENAME, char * music_data)
         }
         if (current_char != '\n' && current_char != ' ' &&
                 current_char != '\t') {
-            SIZE++; 
+            *SIZE = *SIZE + 1; 
         }
     }
 
-    printf("%d\n", SIZE); // remove after debugging
+    // printf("%d\n", SIZE); // remove after debugging
 
     // now we can allocate an array to store the music data efficiently
     // (in terms of memory)
-    music_data = calloc(SIZE, sizeof(char));
+    music_data = calloc(*SIZE, sizeof(char));
 
     // reset where we are in the file, and fill that array up!
     // (note: probably could've combined this while loop with
@@ -86,12 +88,12 @@ void read_file(char const FILENAME, char * music_data)
         if (current_char != '\n' && current_char != ' ' &&
                 current_char != '\t') {
             music_data[j] = current_char; 
-            printf("\n%c", music_data[j]);
+            // printf("\n%c", music_data[j]);
             j++;
         }
     }
 
-    printf("\n");
+    // printf("\n");
     
     // always free memory and close files!!
     fclose(music);
@@ -99,5 +101,5 @@ void read_file(char const FILENAME, char * music_data)
     // don't free it when we still need it elsewhere^^
     // free at end of main function though
 
-    return 0;
+    return music_data;
 }
