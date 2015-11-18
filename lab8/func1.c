@@ -9,6 +9,7 @@ int main()
     int SIZE = 0;
     FILE * music;
     char * music_data;
+    char current_char;
 
     // open file and return error if not found
     music = fopen(FILENAME, "r");
@@ -19,9 +20,16 @@ int main()
 
     // increment the SIZE variable for every character
     // added: other than whitespace
-    while (fgetc(music) != EOF) {
-       SIZE++; 
-    }
+    do {
+        current_char = fgetc(music);
+        if (current_char == EOF) {
+            break;
+        }
+        if (current_char != '\n' && current_char != ' ') {
+            SIZE++; 
+        }
+    } while(current_char != EOF);
+
     printf("%d\n", SIZE); // remove after debugging
 
     // now we can allocate an array to store the music data efficiently
