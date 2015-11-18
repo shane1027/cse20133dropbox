@@ -5,10 +5,10 @@
 
 int main()
 {
-    int i = 0;
+    int j = 0;
     int SIZE = 0;
     FILE * music;
-    char * music_data;
+    int * music_data;
 
     music = fopen(FILENAME, "r");
     if (music == NULL) {
@@ -17,16 +17,20 @@ int main()
     }
 
     while (fgetc(music) != EOF) {
-       i++; 
+       SIZE++; 
     }
+    printf("%d\n", SIZE);
 
-    music_data = calloc(SIZE, sizeof(char));
+    music_data = calloc(SIZE, sizeof(int));
 
-    for (i=0; i<SIZE; i++) {
-        printf("\n%d", music_data[i]);
+    for (j=0; j<SIZE; j++) {
+        music_data[j] = j;
+        printf("\n%d", music_data[j]);
     }
 
     printf("\n");
+    fclose(music);
+    free(music_data);
 
     return 0;
 }
