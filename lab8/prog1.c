@@ -127,13 +127,13 @@ char * read_music(const char *file, int * SIZE)
  * Purpose: read length of music in 
  * seconds.,
  * Input: char[]
- * Output: int length
+ * Output: double length
  * ************************************/
 
 double time_music(char * music_data, int array_length)
 {
     int i;
-    double time = 0, delta_time;
+    double time = 0, delta_time = 1;
     
 
     for (i = 0; i < array_length; i++) {
@@ -201,6 +201,5 @@ double time_music(char * music_data, int array_length)
                 break;
         }
     }
-
-        return time;
+    return time;
 }
