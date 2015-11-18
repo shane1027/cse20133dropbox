@@ -1,16 +1,22 @@
 #include <stdio.h>
-#include <stdlin.h>
-#define FILENAME 'song.music'
+#include <stdlib.h>
+#include <stdio.h>
+#define FILENAME "song.music"
 
 int main()
 {
     int i = 0;
     int SIZE = 0;
     FILE * music;
+    char * music_data;
 
     music = fopen(FILENAME, "r");
+    if (music == NULL) {
+        printf("File not found.\n");
+        return EXIT_FAILURE;
+    }
 
-    while (fget != EOF) {
+    while (fgetc(music) != EOF) {
        i++; 
     }
 
