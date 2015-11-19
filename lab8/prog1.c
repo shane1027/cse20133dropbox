@@ -11,14 +11,14 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
+#include "wavfile.h"
 
 int main()
 {
     char * read_music(const char *file, int * SIZE);
     double time_music(char * music_data, int array_length, int* notes);
+    int write_music(char * music_data, int lenth, double song_length); 
     char * music_data;
-    char * note_lengths;
-    FILE * music_output;
     const char FILENAME[] = "song.music";
     int i = 0, length = 0, catch, notes = 0;
     double time_total;
@@ -36,7 +36,7 @@ int main()
     // calculate the length (in seconds) of each note
     time_total = time_music(music_data, length, &notes);
     if (time_total == 0) {
-        printf("error2\n");
+        printf("\nerror2\n");
         return EXIT_FAILURE;
     }
     
@@ -44,13 +44,11 @@ int main()
     printf("\n%d", notes);
 
     // now pass music data to decoding / writing function
-    /* music_output = wavfile_open(sound.wav);
-
-    for (i = 0; i < length; i++) {
-        catch = write_music(music_data, length, notes);
+    catch = write_music(music_data, length, time_total);
+    if (catch != 0) {
+        printf("\nerror3\n");
+        return EXIT_FAILURE;
     }
-
-    wavfile_close(music_output);*/
 
     printf("\n");
 
@@ -76,7 +74,7 @@ char * read_music(const char *file, int * SIZE)
     FILE * music;
     char * music_data;
     char current_char;
-    const char valid_notes[] = ".AaBbCcDdEeFfGg";
+    // const char valid_notes[] = ".AaBbCcDdEeFfGg";
     
 
     // open file and return error if not found
@@ -153,7 +151,7 @@ char * read_music(const char *file, int * SIZE)
 
 double time_music(char * music_data, int array_length, int* notes)
 {
-    int i, j;
+    int i;
     double time = 0;
     double delta_time = 1;
     
@@ -252,26 +250,122 @@ double time_music(char * music_data, int array_length, int* notes)
  * Output: int for status, writes .wav
  * ************************************/
 
-/* int write_music(char * music_data, double length) 
+int write_music(char * music_data, int length, double song_length) 
 {
-    const int NUM_SAMPLES = (WAVFILE_SAMPLES_PER_SECOND*length);
-    short waveform[NUM_SAMPLES];
+    FILE * music_output;
+    short * waveform_gen(double frequency, double length);
+    int i;
+    double octave = 1;
+    double note_length = 1;
+    double file_length;    short * waveform;
+
+    music_output = wavfile_open("song.wav");
+    if (music_output == NULL) {
+        return 1;
+    }
+
+    for (i = 0; i < length; i++) {
+        file_length = note_length*WAVFILE_SAMPLES_PER_SECOND;
+        switch (music_data[i])
+        {
+            case 'A':
+                waveform = waveform_gen(440*octave,note_length);
+                wavfile_write(music_output, waveform, file_length);
+                break;
+            case 'a':
+                waveform = waveform_gen(415.3*octave,note_length);
+                wavfile_write(music_output, waveform, file_length);
+                break;
+            case 'B':
+                waveform = waveform_gen(493.88*octave, note_length);
+                wavfile_write(music_output, waveform, file_length);
+                break;
+            case 'b':
+                waveform = waveform_gen(466.16*octave, note_length);
+                wavfile_write(music_output, waveform, file_length);
+                break;
+            case 'C':
+                waveform = waveform_gen(523.25*octave, note_length);
+                wavfile_write(music_output, waveform, file_length);
+                break;
+            case 'D':
+                waveform = waveform_gen(587.33*octave, note_length);
+                wavfile_write(music_output, waveform, file_length);
+                break;
+            case 'd':
+                waveform = waveform_gen(554.37*octave, note_length);
+                wavfile_write(music_output, waveform, file_length);
+                break;
+            case 'E':
+                waveform = waveform_gen(659.26*octave, note_length);
+                wavfile_write(music_output, waveform, file_length);
+                break;
+            case 'e':
+                waveform = waveform_gen(622.25*octave, note_length);
+                wavfile_write(music_output, waveform, file_length);
+                break;
+            case 'F':
+                waveform = waveform_gen(698.46*octave, note_length);
+                wavfile_write(music_output, waveform, file_length);
+                break;
+            case 'G':
+                waveform = waveform_gen(783.99*octave, note_length);
+                wavfile_write(music_output, waveform, file_length);
+                break;
+            case 'g':
+                waveform = waveform_gen(739.99*octave, note_length);
+                wavfile_write(music_output, waveform, file_length);
+                break;
+            case '.':
+                waveform = waveform_gen(0, note_length);
+                wavfile_write(music_output, waveform, file_length);
+                break;
+            case '+':
+                octave = octave*2;
+                break;
+            case '-':
+                octave = octave*(.5);
+                break;
+            case '1':
+                note_length = 2;
+                break;
+            case '2':
+                note_length = 1;
+                break;
+            case '4':
+                note_length = .5;
+                break;
+            case '8':
+                note_length = .25;
+                break;
+            case '6':
+                note_length = .125;
+                break;
+        }
+    }
+
+    wavfile_close(music_output);
+
+    return 0;
+}
+
+
+short * waveform_gen(double frequency, double length)
+{
+    #include <math.h>
+
     int volume = 32000, i = 0;
     double t;
+    short * waveform;
 
-    for (i = 0; i < NUM_SAMPLES; i++) {
+    waveform = calloc(WAVFILE_SAMPLES_PER_SECOND*length,sizeof(short));
+
+    for (i = 0; i < (WAVFILE_SAMPLES_PER_SECOND*length); i++) {
         // first find out the time we're at in the waveform in seconds 
         t = (double) i / WAVFILE_SAMPLES_PER_SECOND; 
         // now we can fill the waveform accordingly, depending on
         // the note chosen, octave, length, etc.
-        waveform[i] = volume*sin(frequency*t*octave*M_PI);
+        waveform[i] = volume*sin(frequency*t*2*M_PI);
     }
-
-    if (music == NULL) {
-        return 1;
-    }
-
-    wavefile_write(music, waveform, length);
-
-
-}*/
+    return waveform;
+}
