@@ -1,4 +1,4 @@
-/***************************************************
+/**************************************************
  * Author: Shane Ryan  sryan8@nd.edu
  * Name: prog1.c
  * Purpose: decode .music file and output .wav file
