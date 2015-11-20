@@ -30,20 +30,25 @@ int main()
 		return 1;
 	}
 
-	for(i=0;i<length;i = i+3) {
+	for(i=0;i<length;i = i+4) {
 		double t = (double) i / WAVFILE_SAMPLES_PER_SECOND;
 		waveform[i] = volume*sin(frequency*t*2*M_PI);
 	}
 
-	for(i=1;i<length;i = i+3) {
+	for(i=1;i<length;i = i + 4) {
 		double t = (double) i / WAVFILE_SAMPLES_PER_SECOND;
 		waveform[i] = (volume*(.3333))*sin(frequency*(.3333)*t*2*M_PI);
 	}
-    
-	for(i=2;i<length;i = i+3) {
+   
+	for(i=2;i<length;i = i + 4) {
 		double t = (double) i / WAVFILE_SAMPLES_PER_SECOND;
-		waveform[i] = (volume*(.6666))*sin(frequency*(.5)*t*2*M_PI);
+		waveform[i] = (volume*(.5))*sin(frequency*(.5)*t*2*M_PI);
 	 }
+
+	for(i=3;i<length;i = i+4) {
+		double t = (double) i / WAVFILE_SAMPLES_PER_SECOND;
+		waveform[i] = volume*.25*sin(frequency*.25*t*2*M_PI);
+	}
     
 
 	wavfile_write(f,waveform,length);

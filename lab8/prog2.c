@@ -1,12 +1,10 @@
 /***************************************
  * Author: Shane Ryan
- * Name: prog1.c
+ * Name: prog2.c
  * Purpose: read in a .music file and
  * convert it to a .wav file like a 
- * player piano.
+ * player piano, w/ instrument funcs.
  * ************************************/
-
-// Creativity:  song.music
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -159,7 +157,7 @@ double time_music(char * music_data, int array_length, int* notes)
     
 
     // complex switch statement for every character in the array.
-    // counts the total valid notes and sums their durations.
+    // counts total valid notes and sums their durations.
     for (i = 0; i < array_length; i++) {
         switch (music_data[i])
         {
@@ -258,6 +256,7 @@ int write_music(char * music_data, int length, double song_length)
 {
     FILE * music_output;
     short * waveform_gen(double frequency, double length);
+    short * spaceage_gen(double frequency, double length);
     int i;
     double octave = 1;
     double note_length = 1;
@@ -268,62 +267,62 @@ int write_music(char * music_data, int length, double song_length)
         return 1;
     }
 
-    // step through the array and use complex switch statement to
-    // select desired output
+    // step through the array and use complex switch statement to 
+    // select desired output note
     for (i = 0; i < length; i++) {
         file_length = note_length*WAVFILE_SAMPLES_PER_SECOND;
         switch (music_data[i])
         {
             case 'A':
-                waveform = waveform_gen(440*octave,note_length);
+                waveform = spaceage_gen(440*octave,note_length);
                 wavfile_write(music_output, waveform, file_length);
                 break;
             case 'a':
-                waveform = waveform_gen(415.3*octave,note_length);
+                waveform = spaceage_gen(415.3*octave,note_length);
                 wavfile_write(music_output, waveform, file_length);
                 break;
             case 'B':
-                waveform = waveform_gen(493.88*octave, note_length);
+                waveform = spaceage_gen(493.88*octave, note_length);
                 wavfile_write(music_output, waveform, file_length);
                 break;
             case 'b':
-                waveform = waveform_gen(466.16*octave, note_length);
+                waveform = spaceage_gen(466.16*octave, note_length);
                 wavfile_write(music_output, waveform, file_length);
                 break;
             case 'C':
-                waveform = waveform_gen(523.25*octave, note_length);
+                waveform = spaceage_gen(523.25*octave, note_length);
                 wavfile_write(music_output, waveform, file_length);
                 break;
             case 'D':
-                waveform = waveform_gen(587.33*octave, note_length);
+                waveform = spaceage_gen(587.33*octave, note_length);
                 wavfile_write(music_output, waveform, file_length);
                 break;
             case 'd':
-                waveform = waveform_gen(554.37*octave, note_length);
+                waveform = spaceage_gen(554.37*octave, note_length);
                 wavfile_write(music_output, waveform, file_length);
                 break;
             case 'E':
-                waveform = waveform_gen(659.26*octave, note_length);
+                waveform = spaceage_gen(659.26*octave, note_length);
                 wavfile_write(music_output, waveform, file_length);
                 break;
             case 'e':
-                waveform = waveform_gen(622.25*octave, note_length);
+                waveform = spaceage_gen(622.25*octave, note_length);
                 wavfile_write(music_output, waveform, file_length);
                 break;
             case 'F':
-                waveform = waveform_gen(698.46*octave, note_length);
+                waveform = spaceage_gen(698.46*octave, note_length);
                 wavfile_write(music_output, waveform, file_length);
                 break;
             case 'G':
-                waveform = waveform_gen(783.99*octave, note_length);
+                waveform = spaceage_gen(783.99*octave, note_length);
                 wavfile_write(music_output, waveform, file_length);
                 break;
             case 'g':
-                waveform = waveform_gen(739.99*octave, note_length);
+                waveform = spaceage_gen(739.99*octave, note_length);
                 wavfile_write(music_output, waveform, file_length);
                 break;
             case '.':
-                waveform = waveform_gen(0, note_length);
+                waveform = spaceage_gen(0, note_length);
                 wavfile_write(music_output, waveform, file_length);
                 break;
             case '+':
@@ -355,6 +354,13 @@ int write_music(char * music_data, int length, double song_length)
     return 0;
 }
 
+/***************************************
+ * Func name: waveform_gen
+ * Purpose: translate data to an array
+ * compatible with .wav output..
+ * Input: double freq, double length
+ * Output: pointer to short to data
+ * ************************************/
 
 short * waveform_gen(double frequency, double length)
 {
@@ -373,5 +379,49 @@ short * waveform_gen(double frequency, double length)
         // the note chosen, octave, length, etc.
         waveform[i] = volume*sin(frequency*t*2*M_PI);
     }
+    return waveform;
+}
+
+/***************************************
+ * Func name: spaceage_gen
+ * Purpose: translate data to an array
+ * compatible with .wav output.
+ * Input: double freq, double length
+ * Output: pointer to short to data
+ * ************************************/
+
+short * spaceage_gen(double frequency, double length)
+{
+    #include <math.h>
+
+    int volume = 32000, i = 0;
+    double t;
+    short * waveform;
+
+    waveform = calloc(WAVFILE_SAMPLES_PER_SECOND*length,sizeof(short));
+
+    for (i = 0; i < (WAVFILE_SAMPLES_PER_SECOND*length); i = i+4) {
+        // first find out the time we're at in the waveform in seconds 
+        t = (double) i / WAVFILE_SAMPLES_PER_SECOND; 
+        // now we can fill the waveform accordingly, depending on
+        // the note chosen, octave, length, etc.
+        waveform[i] = volume*(.66)*sin(frequency*(.5)*t*2*M_PI);
+    }
+// superimpose multiple sin waves onto each other for desired harmonics
+    for (i = 1; i < (WAVFILE_SAMPLES_PER_SECOND*length); i = i+4) {
+        t = (double) i / WAVFILE_SAMPLES_PER_SECOND; 
+        waveform[i] = volume*(.5)*sin(frequency*(.666)*t*2*M_PI);
+    }
+
+    for (i = 2; i < (WAVFILE_SAMPLES_PER_SECOND*length); i = i+4) {
+        t = (double) i / WAVFILE_SAMPLES_PER_SECOND; 
+        waveform[i] = volume*sin(frequency*t*2*M_PI);
+    }
+
+    for (i = 3; i < (WAVFILE_SAMPLES_PER_SECOND*length); i = i+4) {
+        t = (double) i / WAVFILE_SAMPLES_PER_SECOND; 
+        waveform[i] = volume*(.25)*sin(frequency*(.333)*t*2*M_PI);
+    }
+
     return waveform;
 }
